@@ -115,3 +115,28 @@ class Video_tools():
             
         except Exception as error:
             return {"error": error}
+
+    def extract_sub(input_file=None, output_path=None):
+        input_file = input_file
+        output_path = output_path
+        if input_file is None:
+            return {"error": "input_file must not be None"}
+        elif output_path is None:
+            output_path = "py_extracted/one_sub"
+        # Creating directories if not exist
+        if os.path.exists(output_path):
+            out_path = output_path
+        else:
+            os.makedirs(output_path)
+            out_path = output_path
+        try:
+            data = Video_tools.video_info(input_file)
+            json_data = json.loads(data)
+            video_type = json_data['streams'][1]['codec_name']
+            out_file = f"{out_path}/py_extracted_sub.{video_type}"
+            cmd = f"ffmpeg -i {input_file} copy -vn acodec {out_file}"
+            run_cmd(cmd)
+            return out_file
+        except Exception as error:
+            return {"error": error}
+    
